@@ -21,6 +21,7 @@ const Input = ({
   secureTextEntry,
   screen,
   onPress,
+  numeric
 }) => {
   const [isSecureText, setIsSecureText] = useState(secureTextEntry);
   const [isActive, setIsActive] = useState(false);
@@ -34,17 +35,32 @@ const Input = ({
           width:placeholder=='Search'?window.width * 0.75:window.width * 0.8
         }}>
         <Icon style={styles.Icon} name={icon} size={20} color={COLORS.dark} />
-        <TextInput
+        {numeric ?  
+          <TextInput
           onFocus={() => setIsActive(true)}
           onBlur={() => setIsActive(false)}
           style={[styles.Input, {marginHorizontal: screen == 'jual' ? 0 : 15}]}
-
+          keyboardType='numeric'
+          placeholder={placeholder}
+          onChangeText={onChangeText}
+          value={value}
+          secureTextEntry={isSecureText}
+          placeholderTextColor={COLORS.grey}
+          maxLength={10}
+        />
+        :
+          <TextInput
+          onFocus={() => setIsActive(true)}
+          onBlur={() => setIsActive(false)}
+          style={[styles.Input, {marginHorizontal: screen == 'jual' ? 0 : 15}]}
           placeholder={placeholder}
           onChangeText={onChangeText}
           value={value}
           secureTextEntry={isSecureText}
           placeholderTextColor={COLORS.grey}
         />
+        }
+        
         {placeholder == 'Password' ||
           placeholder == 'Current Password' ||
           placeholder == 'New Password' ||

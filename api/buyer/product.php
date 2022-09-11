@@ -9,10 +9,10 @@ function get(){
     global $conn;
     if(isset($_GET['category_id'])){
       $category_id = $_GET['category_id'];
-      $sql1 = mysqli_query($conn,"SELECT * from product WHERE category_ids='$category_id' AND status='available'");
+      $sql1 = mysqli_query($conn,"SELECT * from product WHERE category_ids='$category_id'");
     }else if(isset($_GET['search'])){
       $search = $_GET['search'];
-      $sql1 = mysqli_query($conn,"SELECT * from product WHERE name like '%".$search."%' AND status='available'");
+      $sql1 = mysqli_query($conn,"SELECT * from product WHERE name like '%".$search."%'");
     }else{
       $sql1 = mysqli_query($conn,"SELECT * from product WHERE status='available' ORDER BY updatedAt DESC");  
     }
@@ -42,7 +42,8 @@ function get(){
                     "id_condition" =>$id_condition,
                     "createdAt" =>$data["createdAt"],
                     "updatedAt" =>$data["updatedAt"],
-                    "category" =>$dataCategory["name"]
+                    "category" =>$dataCategory["name"],
+                    "stock" =>intval($data["stock"]),
                 );
             }else{
                 $item= [];
@@ -94,6 +95,7 @@ function get_spesific(){
                     "name" =>$data["name"],
                     "description" =>$data["description"],
                     "base_price" =>intval($data["price"]),
+                    "stock" =>intval($data["stock"]),
                     "image_url" =>$data["image"],
                     "image_name" =>$data["image"],
                     "location" =>$data["location"],

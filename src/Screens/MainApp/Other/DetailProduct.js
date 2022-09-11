@@ -17,25 +17,19 @@ import {COLORS, FONTS} from '../../../Utils';
 import {useIsFocused, useNavigation} from '@react-navigation/native';
 import {
   addCart,
-  buyProduct,
   connectionChecker,
   deleteProduct,
-  getStatusOrderProduct,
-  goFingerprint,
   rupiah,
   getCart,
   getCategory
 } from '../../../Redux/actions';
 import {useDispatch, useSelector} from 'react-redux';
 import Button from '../../../Components/Others/Button';
-import BottomModal from '../../../Components/Others/BottomModal';
 import {ButtonIcon, DetailProductShimmer, Input} from '../../../Components';
-import {Formik} from 'formik';
-import * as yup from 'yup';
 import {ms} from 'react-native-size-matters';
 import { ImageProduct, ImageUser } from '../../../../api/url';
 const Detail = ({route}) => {
-  const {user, order_id} = route.params;
+  const {user} = route.params;
 
   const navigation = useNavigation();
   const dispatch = useDispatch();
@@ -58,11 +52,7 @@ const Detail = ({route}) => {
   })
 
   console.log("id : ",checkCart)
-  const statusOrderProduct =
-    user != 'seller' && useSelector(state => state.appData.statusOrderProduct);
 
-  const [openModal, setopenModal] = useState(false);
-  const [component, setComponent] = useState(null);
   const [loading, setLoading] = useState(false);
   const [refreshing, setRefreshing] = useState(false);
 
@@ -76,38 +66,11 @@ const Detail = ({route}) => {
     );
   };
 
-  const goBuy = (values, resetForm) => {
-    goFingerprint().then(() => {
-      dispatch(buyProduct(values, loginUser.access_token)).then(() => {
-        setRefreshing(true);
-        wait(500).then(() => {
-          resetForm();
-          setopenModal(false);
-          setRefreshing(false);
-          navigation.replace('MainApp');
-        });
-        // dispatch(getStatusOrderProduct(loginUser.access_token, order.id))
-      });
-    });
-  };
 
   const cekData = () => {
     dispatch(getCategory()).then(()=>{
       dispatch(getCart(loginUser.id)).then(()=>{setLoading(false);})
     })
-  //   if (user == 'buyer') {
-  //     if (statusOrderProduct) {
-  //       dispatch(
-  //         getStatusOrderProduct(loginUser.access_token, statusOrderProduct.id),
-  //       );
-  //     }
-  //     if (order_id) {
-  //       dispatch(getStatusOrderProduct(loginUser.access_token, order_id));
-  //     } else {
-  //       dispatch(getStatusOrderProduct(loginUser.access_token, null));
-  //     }
-  //   }
-    
   };
 
   const addtoCart = (id) =>{
@@ -193,6 +156,10 @@ const Detail = ({route}) => {
             <Text style={styles.SubTitle}>Description</Text>
             <Text style={styles.DescriptionText}>
               {productSpesific?.description}
+            </Text>
+            <Text style={styles.SubTitle}>Stock</Text>
+            <Text style={styles.DescriptionText}>
+              {productSpesific?.stock}
             </Text>
           </View>
           <View style={styles.Button}>

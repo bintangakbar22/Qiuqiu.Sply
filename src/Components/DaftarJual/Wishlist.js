@@ -11,15 +11,13 @@ import {useDispatch, useSelector} from 'react-redux';
 import {ms} from 'react-native-size-matters';
 import {COLORS, FONTS} from '../../Utils';
 import {useNavigation} from '@react-navigation/native';
-import {getWishlistSpesific, rupiah, timeDate} from '../../Redux/actions';
+import { rupiah,getOrderSellerPendingSpesific} from '../../Redux/actions';
 import moment from 'moment';
 import { ImageProduct } from '../../../api/url';
 const Wishlist = ({data}) => {
   const navigation = useNavigation();
   const dispatch = useDispatch();
-
   const loginUser = useSelector(state => state.appData.loginUser);
-
  return (
     <View
       style={{
@@ -29,14 +27,15 @@ const Wishlist = ({data}) => {
       }}>
       {data &&
         data.map(item => {
+          console.log("aaaa",item.status)
           return (
             <>
               <TouchableOpacity
                 onPress={() => {
                   dispatch(
-                    getWishlistSpesific(loginUser?.id, item?.id),
+                    getOrderSellerPendingSpesific(item?.id_order),
                   ).then(
-                    navigation.navigate('InfoPenawar', {
+                    navigation.navigate('OrderPendingSeller', {
                       dataRoute: item,
                     }),
                   );
@@ -54,7 +53,13 @@ const Wishlist = ({data}) => {
                     <Text style={[styles.textGrey, {}]}>{`${moment(
                       item?.updatedAt,
                     ).format('D MMMM YYYY hh:mm')}`}</Text>
-                    <Text style={[styles.textGrey,{color:'orange',fontFamily:FONTS.Bold}]}>Order Pending</Text>
+                    {
+                      item.status=='pending' ?
+                      <Text style={[styles.textGrey,{color:'orange',fontFamily:FONTS.Bold}]}>Order Pending</Text>
+                      :
+                      <Text style={[styles.textGrey,{color:COLORS.green,fontFamily:FONTS.Bold}]}>Order Accepted</Text>
+                    }
+                    
                   </View>
                     <View style={{width:window.width*0.85,borderColor:COLORS.grey,borderWidth:0.3}}/>
                   <View style={{flexDirection:'row',width:window.width*0.82}}>            

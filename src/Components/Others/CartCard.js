@@ -13,7 +13,7 @@ import {COLORS, FONTS} from '../../Utils';
 import { useSelector } from 'react-redux';
 import { ImageProduct } from '../../../api/url';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
-const CartCard = ({data, onPressCart, cart, label}) => {
+const CartCard = ({data, onPressCart, cart, label,onPressMin,onPressPlus}) => {
   const loginUser = useSelector(state => state.appData.loginUser);
   return (
   <>
@@ -33,9 +33,32 @@ const CartCard = ({data, onPressCart, cart, label}) => {
         </Text>
         <View style={{flexDirection:'row',justifyContent:'space-between'}}>
             <Text style={styles.Price} numberOfLines={1}>
-                {`Rp. ${rupiah( data?.Product?.base_price )}`}
+                {`Rp. ${rupiah( data?.cart_price )}`}
             </Text>
+            {loginUser &&label=='checkout'&&
+            <Text style={[styles.Price,{color:COLORS.grey}]} numberOfLines={1}>
+              Qty :{data.qty}
+            </Text>
+            }
             {loginUser &&label=='cart'? (
+                <>
+                {data.qty>1&&
+                
+                <TouchableOpacity
+                style={[
+                    styles.AddWishlist,
+                ]}
+                onPress={onPressMin}>
+                <Icon name={'minus-circle-outline'} size={ms(22)} color={COLORS.green} />
+                </TouchableOpacity>
+                }
+                <TouchableOpacity
+                style={[
+                    styles.AddWishlist,
+                ]}
+                onPress={onPressPlus}>
+                <Icon name={'plus-circle-outline'} size={ms(22)} color={COLORS.primaryBlue} />
+                </TouchableOpacity>
                 <TouchableOpacity
                 style={[
                     styles.AddWishlist,
@@ -43,6 +66,7 @@ const CartCard = ({data, onPressCart, cart, label}) => {
                 onPress={onPressCart}>
                 <Icon name={'trash-can-outline'} size={ms(22)} color={COLORS.red} />
                 </TouchableOpacity>
+                </>
             ) : null}
         </View>
         

@@ -166,11 +166,11 @@ const DaftarJual = ({navigation}) => {
           icon={'heart-outline'}
           style={{backgroundColor: daftarJualScreen == 'Wishlist'? COLORS.black:COLORS.grey }}
           onPress={() => dispatch(DaftarJualScreen('Wishlist'))}/>
-        <CategoryButton
+        {/* <CategoryButton
           name={'Sold'}
           icon={'currency-usd'}
           style={{backgroundColor: daftarJualScreen == 'Sold'? COLORS.black:COLORS.grey }}
-          onPress={() => dispatch(DaftarJualScreen('Sold'))}/>
+          onPress={() => dispatch(DaftarJualScreen('Sold'))}/> */}
       </View>
       <ScrollView
         contentContainerStyle={{
@@ -198,9 +198,9 @@ const DaftarJual = ({navigation}) => {
               ) : (
                 <Blank caption={'No Interested!'} onRefresh={onRefresh} />
               ))}
-            {daftarJualScreen == 'Sold' &&
+            {/* {daftarJualScreen == 'Sold' &&
               <Blank caption={'No Product Sold!'} onRefresh={onRefresh} />
-            }
+            } */}
           </>
         )}
       </ScrollView>

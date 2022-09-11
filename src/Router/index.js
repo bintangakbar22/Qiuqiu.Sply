@@ -14,6 +14,7 @@ import {
   Cart,
   OrderPending,
   Checkout,
+  OrderPendingSeller,
 } from '../Screens';
 import MainApp from './MainApp';
 
@@ -37,6 +38,7 @@ const Router = () => {
       <Stack.Screen name="History" component={History} />
       <Stack.Screen name="Cart" component={Cart} />
       <Stack.Screen name="OrderPending" component={OrderPending} />
+      <Stack.Screen name="OrderPendingSeller" component={OrderPendingSeller} />
       <Stack.Screen name="Checkout" component={Checkout} />
 
     </Stack.Navigator>

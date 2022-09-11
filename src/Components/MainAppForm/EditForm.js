@@ -133,6 +133,7 @@ const EditForm = ({data}) => {
         base_price: data.base_price.toString(),
         location: userData?.city,
         image: ImageProduct+ data.image_url,
+        stock:data.stock
       }}
       validationSchema={EditValidation}
       onSubmit={(values, {resetForm}) => {
@@ -165,6 +166,16 @@ const EditForm = ({data}) => {
             placeholder={'Rp 0.00'}
             error={errors.base_price}
             screen={'jual'}
+          />
+          <Text style={styles.Text}>Stock</Text>
+          <Input
+            onChangeText={handleChange('stock')}
+            onBlur={handleBlur('stock')}
+            value={values.stock}
+            placeholder={'Product Stock'}
+            error={errors.stock}
+            screen={'jual'}
+            numeric
           />
           <Text style={styles.Text}>Condition</Text>
           <DropDownPicker

@@ -21,17 +21,21 @@ function get(){
                     "name" =>$dataProduct["name"],
                     "description" =>$dataProduct["description"],
                     "base_price" =>intval($dataProduct["price"]),
+                    "stock" =>intval($dataProduct["stock"]),
                     "image_url" =>$dataProduct["image"],
                     "image_name" =>$dataProduct["image"],
                     "location" =>$dataProduct["location"],
                     "user_id" =>$dataProduct["id_user"],
                     "status" =>$dataProduct["status"],
                 );
+                $cart_price =intval($dataProduct["price"])*intval($data["qty"]);
                 $item[]=array(
                     "id" =>$data["id_cart"],
                     "product_id" =>$dataProduct["id_product"],
                     "user_id" =>$data["id_user"],
                     "Product" =>$product,
+                    "qty" =>intval($data["qty"]),
+                    "cart_price" => $cart_price,
                     "createdAt" =>$data["createdAt"],
                     "updatedAt" =>$data["updatedAt"],
                 );
@@ -72,7 +76,7 @@ function post(){
         $sql = mysqli_query($conn,"SELECT * from cart where id_user='$id' ");  
         $check = mysqli_num_rows($sql);
         if($check<=4){
-            $qry1 = "INSERT INTO cart (id_user,id_product,createdAt,updatedAt) VALUES ('$id','$product_id','$formatted','$formatted')";
+            $qry1 = "INSERT INTO cart (id_user,id_product,qty,createdAt,updatedAt) VALUES ('$id','$product_id',1,'$formatted','$formatted')";
             $sql1 = mysqli_query($conn,$qry1);
             if($sql1){
                 $message ="Success";
@@ -96,6 +100,31 @@ function delete(){
     $id_user = $decodedData['id_user'];
     $id_cart = $decodedData['id_cart'];
     $qry1 = "DELETE FROM cart WHERE id_user='$id_user' AND id_cart ='$id_cart'";
+    $sql1 = mysqli_query($conn,$qry1);
+    if($sql1){
+        $message ="Success";
+    }else{
+        $message ="Failed";
+    }
+    $response = array(
+        'status' => 'OK',
+        "message" => $message
+    );
+    echo json_encode($response);
+}
+
+function update(){
+    global $conn;
+    global $decodedData;
+    $id_user = $decodedData['id_user'];
+    $id_cart = $decodedData['id_cart'];
+    $type = $decodedData['type'];
+    if($type=="plus"){
+        $qry1 = "UPDATE cart SET qty=qty+1 WHERE id_user='$id_user' AND id_cart='$id_cart'";
+    }else{
+        $qry1 = "UPDATE cart SET qty=qty-1 WHERE id_user='$id_user' AND id_cart='$id_cart'";
+    }
+    
     $sql1 = mysqli_query($conn,$qry1);
     if($sql1){
         $message ="Success";

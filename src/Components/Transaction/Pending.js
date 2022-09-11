@@ -32,7 +32,7 @@ const Pending = ({data}) => {
               <TouchableOpacity
                 onPress={() => {
                   dispatch(
-                    getOrderBuyerPendingSpesific(item?.id_order),
+                    getOrderBuyerPendingSpesific(item?.id_order)
                   ).then(
                     navigation.navigate('OrderPending', {
                       dataRoute: item,
@@ -52,7 +52,12 @@ const Pending = ({data}) => {
                     <Text style={[styles.textGrey, {}]}>{`${moment(
                       item?.updatedAt,
                     ).format('D MMMM YYYY hh:mm')}`}</Text>
-                    <Text style={[styles.textGrey,{color:'orange',fontFamily:FONTS.Bold}]}>Order Pending</Text>
+                    {
+                      item.status=='pending' ?
+                      <Text style={[styles.textGrey,{color:'orange',fontFamily:FONTS.Bold}]}>Order Pending</Text>
+                      :
+                      <Text style={[styles.textGrey,{color:COLORS.green,fontFamily:FONTS.Bold}]}>Order Accepted</Text>
+                    }
                   </View>
                     <View style={{width:window.width*0.85,borderColor:COLORS.grey,borderWidth:0.3}}/>
                   <View style={{flexDirection:'row',width:window.width*0.82}}>            

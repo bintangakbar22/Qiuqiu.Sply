@@ -18,10 +18,7 @@ const MainApp = () => {
       if (!loginUser) {
         e.preventDefault();
         navigation.navigate('Auth');
-        Toast.show({
-          type: 'error',
-          text1: 'You are not login!',
-        });
+        
       }
     },
   });

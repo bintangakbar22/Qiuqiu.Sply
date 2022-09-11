@@ -9,7 +9,8 @@ function get(){
     global $conn;
     $id = $_GET['id'];
     $sql1 = mysqli_query($conn,"SELECT * from user WHERE id_user='$id'");
-    if($sql1){
+    $check =mysqli_num_rows($sql1);
+    if($check!=0){
         while($data = mysqli_fetch_array($sql1)) {
             $item=array(
                 "id" =>$data["id_user"],

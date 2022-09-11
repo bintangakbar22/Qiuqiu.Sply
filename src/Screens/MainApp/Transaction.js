@@ -18,7 +18,8 @@ import {ms} from 'react-native-size-matters';
 import {
   connectionChecker,
   TransactionScreen,
-  getOrderBuyerPending
+  getOrderBuyerPending,
+  getOrderBuyerinDelivery
 } from '../../Redux/actions';
 import {
   CategoryButton,
@@ -29,6 +30,7 @@ import {
 import {COLORS, FONTS} from '../../Utils';
 import { ImageUser } from '../../../api/url';
 import Pending from '../../Components/Transaction/Pending';
+import InDelivery from '../../Components/Transaction/InDelivery';
 
 const Transaction = ({navigation}) => {
   const isFocused = useIsFocused();
@@ -38,6 +40,7 @@ const Transaction = ({navigation}) => {
   const loginUser = useSelector(state => state.appData.loginUser);
   const userData = useSelector(state => state.appData.userData);
   const orderBuyerPending = useSelector(state => state.appData.orderBuyerPending);
+  const orderBuyerinDelivery = useSelector(state => state.appData.orderBuyerinDelivery);
   const transactionScreen = useSelector(state => state.appData.transactionScreen);
   const category = useSelector(state => state.appData.category);
 
@@ -56,6 +59,7 @@ const Transaction = ({navigation}) => {
 
   const getData = () => {
     dispatch(getOrderBuyerPending(loginUser.id))
+    dispatch(getOrderBuyerinDelivery(loginUser.id))
     setLoading(true);
    
     setLoading(false);
@@ -92,12 +96,13 @@ const Transaction = ({navigation}) => {
           name={'Delivered'}
           icon={'truck-delivery-outline'}
           style={{backgroundColor: transactionScreen == 'Delivered'? COLORS.black:COLORS.grey }}
-          />
-        <CategoryButton
+          onPress={() => dispatch(TransactionScreen('Delivered'))}/>
+          
+        {/* <CategoryButton
           name={'Done'}
           icon={'check-outline'}
           style={{backgroundColor: transactionScreen == 'Done'? COLORS.black:COLORS.grey }}
-          />
+          /> */}
       </View>
       <ScrollView
         contentContainerStyle={{
@@ -120,11 +125,12 @@ const Transaction = ({navigation}) => {
               <Pending data={orderBuyerPending} />
             )}
             {transactionScreen == 'Delivered' &&
-              <Blank caption={'No Interested!'} onRefresh={onRefresh} />
+             <InDelivery data={orderBuyerinDelivery}/>
+              
              }
-            {transactionScreen == 'Done' &&
+            {/* {transactionScreen == 'Done' &&
               <Blank caption={'No Product Sold!'} onRefresh={onRefresh} />
-            }
+            } */}
           </>
         )}
       </ScrollView>

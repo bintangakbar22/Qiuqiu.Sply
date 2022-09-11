@@ -37,7 +37,8 @@ import {
   GET_ORDER_SELLER_PENDING,
   GET_ORDER_SELLER_INDELIVERY,
   GET_ORDER_SELLER_DONE,
-  GET_ORDER_BUYER_PENDING_SPECIFIC
+  GET_ORDER_BUYER_PENDING_SPECIFIC,
+  GET_ORDER_SELLER_PENDING_SPECIFIC
 } from '../types';
 const initialState = {
   authScreen: 'Login',
@@ -73,7 +74,8 @@ const initialState = {
   orderSellerPending:[],
   orderSellerinDelivery:[],
   orderSellerDone:[],
-  orderBuyerPendingSpecific:null
+  orderBuyerPendingSpecific:null,
+  orderSellerPendingSpecific:null
 };
 
 const Reducer = (state = initialState, action) => {
@@ -271,6 +273,11 @@ const Reducer = (state = initialState, action) => {
       return {
         ...state,
         orderBuyerPendingSpecific: action.payload,
+    };
+    case GET_ORDER_SELLER_PENDING_SPECIFIC:
+      return {
+        ...state,
+        orderSellerPendingSpecific: action.payload,
     };
     default:
       return state;

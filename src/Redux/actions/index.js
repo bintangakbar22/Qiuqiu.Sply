@@ -37,6 +37,8 @@ import {
   GET_ORDER_BUYER_PENDING,
   GET_ORDER_SELLER_PENDING,
   GET_ORDER_BUYER_PENDING_SPECIFIC,
+  GET_ORDER_SELLER_PENDING_SPECIFIC,
+  GET_ORDER_BUYER_INDELIVERY,
 } from '../types';
 import {URL} from '../../Utils/Url';
 import { URLQ } from '../../../api/url';
@@ -159,16 +161,6 @@ export const getUserData = id => {
               dispatch({
                 type: GET_USER_DATA,
                 payload: Response.data,
-              });
-          }else if (Response.message == "User does not exist") { 
-              Toast.show({
-                type: 'error',
-                text1: 'You are not login!',
-              });
-          }else{
-              Toast.show({
-                type: 'error',
-                text1: 'You are not login!',
               });
           }
       })
@@ -425,6 +417,29 @@ export const removeCart = (id,id_cart) => {
   };
 };
 
+export const updateCart = (id,id_cart,type) => {
+  return async () => {
+      var APIURL = URLQ+"/buyer/cart.php?method=update";
+      var headers = {
+          'Accept' : 'application/json',
+          'Content-Type' : 'application/json'
+      };
+      var Data ={
+          id_user:id,
+          id_cart :id_cart,
+          type:type
+      };
+      console.log(Data)
+      await fetch(APIURL,{
+          method: 'POST',
+          headers: headers,
+          body: JSON.stringify(Data)
+      })
+      .then((Response)=>Response.json())
+      
+  };
+};
+
 
 export const addWishlist = (productId, id) => {
   return async () => {
@@ -508,7 +523,7 @@ export const removeWishlist = (id,id_wishlist) => {
 
 export const postProduct = (data, id, category,condition,image) => {
   return async dispatch => {
-    const {name, description, base_price, location} = data;
+    const {name, description, base_price, location,stock} = data;
         var APIURL = URLQ+"/seller/product.php?method=post";
         var headers = {
             'Accept' : 'application/json',
@@ -522,6 +537,7 @@ export const postProduct = (data, id, category,condition,image) => {
             location:location,
             category_ids:category,
             condition:condition,
+            stock : stock
         };
         await fetch(APIURL,{
             method: 'POST',
@@ -780,7 +796,7 @@ export const deleteProduct = (id,id_product) => {
 
 export const updateProduct = (data, id_user, id_product, category,condition) => {
   return async dispatch => {
-    const {name, description, base_price, location} = data;
+    const {name, description, base_price, location,stock} = data;
         var APIURL = URLQ+"/seller/product.php?method=update";
         var headers = {
             'Accept' : 'application/json',
@@ -795,6 +811,7 @@ export const updateProduct = (data, id_user, id_product, category,condition) => 
             location:location,
             category_ids:category,
             condition:condition,
+            stock:stock,
         };
         await fetch(APIURL,{
             method: 'POST',
@@ -818,29 +835,85 @@ export const updateProduct = (data, id_user, id_product, category,condition) => 
   };
 };
 
-export const acceptOrder = (AccessToken, id) => {
+export const acceptOrder = (id) => {
   return async dispatch => {
-    await axios
-      .patch(
-        URL + 'seller/order/' + id,
-        {
-          status: '',
-        },
-        {
-          headers: {
-            access_token: `${AccessToken}`,
-          },
-        },
-      )
-      .then(res => {
-        Toast.show({
-          type: 'success',
-          text1: 'Success Accept Order!',
-        });
+    var APIURL = URLQ+"/seller/order.php?method=post&confirm";
+      var headers = {
+          'Accept' : 'application/json',
+          'Content-Type' : 'application/json'
+      };
+      var Data ={
+          id_order:id
+      };
+      await fetch(APIURL,{
+          method: 'POST',
+          headers: headers,
+          body: JSON.stringify(Data)
       })
-      .catch(function (error) {
-        console.log(error);
-      });
+      .then((Response)=>Response.json())
+      .then((Response)=>{
+          if (Response.message == "Success") { 
+              Toast.show({
+                type: 'success',
+                text1: 'Successful Accept Order!',
+              });
+          }
+      })
+  };
+};
+
+export const doneOrder = (id) => {
+  return async dispatch => {
+    var APIURL = URLQ+"/seller/order.php?method=post&done";
+      var headers = {
+          'Accept' : 'application/json',
+          'Content-Type' : 'application/json'
+      };
+      var Data ={
+          id_order:id
+      };
+      await fetch(APIURL,{
+          method: 'POST',
+          headers: headers,
+          body: JSON.stringify(Data)
+      })
+      .then((Response)=>Response.json())
+      .then((Response)=>{
+          if (Response.message == "Success") { 
+              Toast.show({
+                type: 'success',
+                text1: 'Successful Confirm Orders Done!',
+              });
+          }
+      })
+  };
+};
+
+export const inputReceipt = (id,no_resi) => {
+  return async dispatch => {
+    var APIURL = URLQ+"/seller/order.php?method=post&uploadReceipt";
+      var headers = {
+          'Accept' : 'application/json',
+          'Content-Type' : 'application/json'
+      };
+      var Data ={
+          id_order:id,
+          no_resi:no_resi
+      };
+      await fetch(APIURL,{
+          method: 'POST',
+          headers: headers,
+          body: JSON.stringify(Data)
+      })
+      .then((Response)=>Response.json())
+      .then((Response)=>{
+          if (Response.message == "Success") { 
+              Toast.show({
+                type: 'success',
+                text1: 'Successful Upload Delivery Receipt!',
+              });
+          }
+      })
   };
 };
 
@@ -1171,6 +1244,34 @@ export const getOrderBuyerPending = (id_user) => {
   };
 };
 
+export const getOrderBuyerinDelivery = (id_user) => {
+  return async dispatch => {
+    var APIURL = URLQ+"/buyer/order.php?method=get_byid&id_buyer="+id_user+"&status=inDelivery";
+      var headers = {
+          'Accept' : '*/*',
+      };
+      await fetch(APIURL,{
+          method: 'GET',
+          headers: headers,
+      })
+      .then((Response)=>Response.json())
+      .then((Response)=>{
+          if (Response.message == "Success") { 
+              console.log(Response.data)
+              dispatch({
+                type: GET_ORDER_BUYER_INDELIVERY,
+                payload: Response.data,
+              });
+          }else{
+              dispatch({
+                type: GET_ORDER_BUYER_INDELIVERY,
+                payload: [],
+              });
+          }
+      })
+  };
+};
+
 export const getOrderBuyerPendingSpesific = (id_order) => {
   return async dispatch => {
     var APIURL = URLQ+"/buyer/order.php?method=get&id_order="+id_order;
@@ -1222,7 +1323,30 @@ export const getOrderSellerPending = (id_user) => {
   };
 };
 
-export const buyProduct = (id,productId) => {
+export const getOrderSellerPendingSpesific = (id_order) => {
+  return async dispatch => {
+    var APIURL = URLQ+"/seller/order.php?method=get&id_order="+id_order;
+      var headers = {
+          'Accept' : '*/*',
+      };
+      await fetch(APIURL,{
+          method: 'GET',
+          headers: headers,
+      })
+      .then((Response)=>Response.json())
+      .then((Response)=>{
+          if (Response.message == "Success") { 
+              console.log(Response.data)
+              dispatch({
+                type: GET_ORDER_SELLER_PENDING_SPECIFIC,
+                payload: Response.data,
+              });
+          }
+      })
+  };
+};
+
+export const buyProduct = (id,productId,qty,finalPrice,courier) => {
   return async dispatch => {
     var APIURL = URLQ+"/buyer/order.php?method=post";
       var headers = {
@@ -1231,7 +1355,10 @@ export const buyProduct = (id,productId) => {
       };
       var Data ={
           id_buyer:id,
-          id_product :productId
+          id_product :productId,
+          qty:qty,
+          final_price:finalPrice,
+          courier: courier
       };
       await fetch(APIURL,{
           method: 'POST',

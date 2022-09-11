@@ -20,6 +20,7 @@ import InfoPenawar from './MainApp/Other/InfoPenawar';
 import Wishlist from './MainApp/Other/Wishlist';
 import History from './MainApp/Other/History';
 import OrderPending from './MainApp/Other/Orders/Buyer/OrderPending';
+import OrderPendingSeller from './MainApp/Other/Orders/Seller/OrderPendingSeller';
 import Checkout from './MainApp/Checkout';
 export {
   Auth,
@@ -40,5 +41,6 @@ export {
   Cart,
   Transaction,
   OrderPending,
-  Checkout
+  Checkout,
+  OrderPendingSeller
 };

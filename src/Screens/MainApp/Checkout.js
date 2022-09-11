@@ -6,7 +6,8 @@ import {
   Dimensions,
   StyleSheet,
   Text,
-  FlatList
+  FlatList,
+  ScrollView
 } from 'react-native';
 import React from 'react';
 import {useState} from 'react';
@@ -26,24 +27,23 @@ const Checkout = ({route}) => {
   const isFocused = useIsFocused();
   const navigation = useNavigation();
   const loginUser = useSelector(state => state.appData.loginUser);
-  const {idProduct,finalPrice,cart} = route.params;
+  const {idProduct,finalPrice} = route.params;
+  const cart = useSelector(state => state.appData.cart);
+  const qty = cart.map(i=>i.qty)
   const [open, setOpen] = useState(false);
   const [value, setValue] = useState([]);
   const [items, setItems] = useState([
     {label: 'JNE      Rp.9.000', value: 9000},
     {label: 'SICEPAT  Rp.10.000', value: 10000},
-    {label: 'ANTERAJA  Rp.10.000', value: 10000}
+    {label: 'ANTERAJA  Rp.11.000', value: 11000}
   ]); 
-  console.log(cart.length)
-  const priceFinal = finalPrice<=1000000?finalPrice+value:finalPrice
-  useState(() => {
-    if (isFocused) {
   
-    }
-  }, []);
+  const priceFinal = finalPrice<=1000000?finalPrice+value:finalPrice
+  console.log(value)
 
   const goBuy = () =>{
-    dispatch(buyProduct(loginUser.id,idProduct)).then(()=>{navigation.navigate("MainApp")})
+    const courier = value.toString();
+    dispatch(buyProduct(loginUser.id,idProduct,qty,priceFinal,courier)).then(()=>{navigation.navigate("MainApp")})
     navigation.navigate("Checkout",{idBuyer:loginUser.id,idProduct:idProduct})
   }
   const renderItem = ({item}) => (
@@ -61,6 +61,7 @@ const Checkout = ({route}) => {
         translucent
       />
       <Header navigation={navigation} title={'Checkout'} />
+      <ScrollView>
       <View style={{flexDirection:'column',marginHorizontal:20}} > 
             <Text style={[styles.Text,{fontSize:15}]} >Shipping Address</Text>
             <View style={{width:window.width*0.90,borderColor:COLORS.grey,borderWidth:0.5,marginVertical:8}}/>
@@ -78,8 +79,8 @@ const Checkout = ({route}) => {
                   contentContainerStyle={styles.FlatlistContainer}
                 />
             <View style={{width:window.width*0.90,borderColor:COLORS.grey,borderWidth:0.5,marginVertical:10,flexDirection:'column'}}/>
-            {finalPrice<1000000 ?
-            <>
+            <View style={{marginBottom:ms(80)}} >
+
             <Text style={[styles.Text,{fontSize:15}]} >Choose Courier</Text>
             <DropDownPicker
               open={open}
@@ -102,6 +103,8 @@ const Checkout = ({route}) => {
               listMode="SCROLLVIEW"
               multiple={false}
             />
+            {finalPrice<1000000 ?
+            <>
             <View style={{justifyContent:'space-between',flexDirection:'row',marginTop:15}} >
               <Text style={[styles.Text]}>Shipping Price</Text>
               <Text style={[styles.Text]}>{`Rp. ${rupiah(value)}`}</Text>
@@ -114,17 +117,19 @@ const Checkout = ({route}) => {
               <Text style={[styles.Text]}>Free</Text>
             </View>
             </>
-            }
+            }            
+            </View>
       </View>
+        </ScrollView>
         <View style={styles.Bottom}>
             <View style={{flexDirection:'column'}}>
                 <Text style={[styles.Text,{fontSize:ms(16)}]}>Total Price</Text>
                 <Text style={[styles.TextPrice]}>Rp. {rupiah(priceFinal)}</Text>
             </View>
-            {finalPrice<1000000&&value.length==0?
-                <Button style={{width:window.width*0.35,marginTop:0,height:50,backgroundColor:COLORS.grey}} caption={'Pay'} disabled />
+            {(finalPrice<1000000&&value.length==0)||value.length==0?
+                <Button style={{width:window.width*0.35,marginTop:0,height:50,backgroundColor:COLORS.grey}} caption={'Order'} disabled />
                 :
-                <Button style={{width:window.width*0.35,marginTop:0,height:50,backgroundColor:COLORS.green}} caption={'Pay'} onPress={goBuy}/>
+                <Button style={{width:window.width*0.35,marginTop:0,height:50,backgroundColor:COLORS.green}} caption={'Order'} onPress={goBuy}/>
             }
         </View>
     </View>
@@ -144,7 +149,6 @@ const styles = StyleSheet.create({
   },
   FlatlistContainer: {
     alignItems: 'center',
-    height:window.height*0.47,
   },
   Text: {
     fontFamily: FONTS.Bold,

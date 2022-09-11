@@ -70,12 +70,6 @@ const Akun = () => {
                 <Text style={styles.Name} numberOfLines={1}>
                   {userData.full_name}
                 </Text>
-                {/* <ButtonShadow
-                  shadowColor={COLORS.black}
-                  onPress={() => navigation.navigate('History')}
-                  icon={'history'}
-                  caption={'My History'}
-                /> */}
                 <ButtonShadow
                   shadowColor={COLORS.black}
                   onPress={() => navigation.navigate('EditAccount')}

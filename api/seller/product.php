@@ -41,7 +41,8 @@ function get(){
                 "createdAt" =>$data["createdAt"],
                 "updatedAt" =>$data["updatedAt"],
                 "category" =>$dataCategory["name"],
-                "category_id" =>$dataCategory["id_category"]
+                "category_id" =>$dataCategory["id_category"],
+                "stock" =>$data["stock"]
             ); 
             if(isset($_GET['id_product'])){
                 $item= $product;
@@ -77,6 +78,7 @@ function update(){
     $price = $decodedData['price'];
     $category_ids = $decodedData['category_ids'];
     $condition = $decodedData['condition'];
+    $stock = $decodedData['stock'];
     if($condition=="1" OR $condition==1){
         $c="New";
     }else{
@@ -88,7 +90,7 @@ function update(){
     $formatted = date('Y-m-d H:i:s ', $timestamp);
     
     $qry1 = "UPDATE product SET name='$name', description='$description', price='$price', category_ids='$category_ids', location='$location',
-    id_user='$id_user',conditionPrdct = '$c',updatedAt='$formatted' WHERE id_product = '$id_product'";
+    id_user='$id_user',conditionPrdct = '$c',updatedAt='$formatted',stock='$stock' WHERE id_product = '$id_product'";
     $sql1 = mysqli_query($conn,$qry1);
     if($sql1){
         $sql2=mysqli_query($conn,"SELECT * FROM product WHERE updatedAt ='$formatted'");
@@ -155,17 +157,18 @@ function post(){
     $category_ids = $decodedData['category_ids'];
     $condition = $decodedData['condition'];
     $location = $decodedData['location'];
+    $stock = $decodedData['stock'];
     $image = "";
     date_default_timezone_set('Asia/Jakarta');
     $timestamp = time();
     $formatted = date('Y-m-d H:i:s ', $timestamp);
 
-    $qry1 = "INSERT INTO product (name,description,price,category_ids,location,image,id_user,conditionPrdct,createdAt,updatedAt) VALUES 
-            ('$name','$description',$price,'$category_ids','$location','$image','$id_user','$condition','$formatted','$formatted')";
+    $qry1 = "INSERT INTO product (name,description,price,category_ids,location,image,id_user,conditionPrdct,createdAt,updatedAt,stock) VALUES 
+            ('$name','$description',$price,'$category_ids','$location','$image','$id_user','$condition','$formatted','$formatted','$stock')";
     $sql1 = mysqli_query($conn,$qry1);
     if($sql1){
         $sql2=mysqli_query($conn,"SELECT * FROM product WHERE createdAt ='$formatted'");
-        $checkk=mysqli_num_rows($sql2);
+        $checkk=mysqli_num_rows($sql2); 
         if(!empty($checkk)){
             while($data= mysqli_fetch_array($sql2)){
                 $id_product = $data['id_product'];

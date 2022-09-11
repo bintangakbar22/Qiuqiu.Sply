@@ -95,6 +95,7 @@ const JualForm = () => {
         base_price: '',
         location: userData?.city,
         image: '',
+        stock:0
       }}
       validationSchema={jualValidation}
       onSubmit={(values, {resetForm}) => {
@@ -127,6 +128,16 @@ const JualForm = () => {
             placeholder={'Product Price'}
             error={errors.base_price}
             screen={'jual'}
+          />
+          <Text style={styles.Text}>Stock</Text>
+          <Input
+            onChangeText={handleChange('stock')}
+            onBlur={handleBlur('stock')}
+            value={values.stock}
+            placeholder={'Product Stock'}
+            error={errors.stock}
+            screen={'jual'}
+            numeric
           />
           <Text style={styles.Text}>Condition</Text>
           <DropDownPicker

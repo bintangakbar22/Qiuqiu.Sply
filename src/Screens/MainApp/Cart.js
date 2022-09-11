@@ -16,7 +16,7 @@ import {
   getCart,
   removeCart,
   rupiah,
-  buyProduct
+  updateCart
 } from '../../Redux/actions';
 import {COLORS} from '../../Utils';
 import {ms} from 'react-native-size-matters';
@@ -25,6 +25,7 @@ import {useIsFocused} from '@react-navigation/native';
 import { FONTS } from '../../Utils';
 import CartShimmer from '../../Components/Skeleton/CartShimmer';
 import {Blank} from '../../Components';
+
 const Cart = ({navigation}) => {
   const dispatch = useDispatch();
   const isFocused = useIsFocused();
@@ -35,21 +36,28 @@ const Cart = ({navigation}) => {
   const loginUser = useSelector(state => state.appData.loginUser);
   const cart = useSelector(state => state.appData.cart);
   const price = cart.map(i=>i.Product.base_price)
-  const finalPrice = cart.map(i=>i.Product.base_price).reduce((a, b) => a + b, 0)
+  const finalPrice = cart.map(i=>i.cart_price).reduce((a, b) => a + b, 0)
   const idProduct = cart.map(i=>i.Product.id)
 
-  console.log("id Product ",idProduct)
+
   console.log("price Product ",price)
   const getData = () => {
-    setLoading(true);
+
     dispatch(getCart(loginUser.id)).then(() =>
       setLoading(false),
     );
   };
 
   const handleRemove = useCallback(id => {
-    setLoading(true);
     dispatch(removeCart(loginUser.id, id)).then(() => getData());
+  }, []);
+
+  const handlePlus = useCallback(id => {
+    dispatch(updateCart(loginUser.id, id,"plus")).then(() => getData());
+  }, []);
+
+  const handleMin = useCallback(id => {
+    dispatch(updateCart(loginUser.id, id,"min")).then(() => getData());
   }, []);
 
   useState(() => {
@@ -73,6 +81,8 @@ const Cart = ({navigation}) => {
       data={item}
       label={'cart'}
       onPressCart={() => handleRemove(item.id)}
+      onPressMin={() => handleMin(item.id)}
+      onPressPlus={() => handlePlus(item.id)}
     />
   );
 
